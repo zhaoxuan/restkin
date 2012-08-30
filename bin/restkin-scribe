@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -f $(dirname $0)/activate ]; then
+    . $(dirname $0)/activate
+fi
+
+exec twistd -n --pidfile= restkin-scribe $@

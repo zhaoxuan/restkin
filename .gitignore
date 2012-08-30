@@ -1,2 +1,4 @@
+dropin.cache
 *.pyc
+twistd.*
 _trial_temp

@@ -1,1 +1,7 @@
-Twisted
+Twisted==12.1.0
+thrift==0.8.0
+zope.interface==4.0.1
+mock
+txKeystone==0.1.0
+https://github.com/racker/scrivener
+https://github.com/racker/tryfer
