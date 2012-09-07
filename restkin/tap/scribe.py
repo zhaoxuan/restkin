@@ -34,7 +34,7 @@ class Options(BaseOptions):
     optParameters = [
         ["port", "p", "tcp:0",
          "Port to listen on for the RESTKin Scribe Collector"],
-        ["restkin-url", None, "http://localhost:6956/v1.0/trace",
+        ["restkin-url", None, "http://localhost:6956/v1.0/tenantId/trace",
          "HTTP(S) URL for posting RESTkin traces."]]
 
 
