@@ -13,8 +13,10 @@
 # limitations under the License.
 
 import json
+import logging
 
 from twisted.web import http
+from twisted.python import log
 from twisted.web.resource import Resource, NoResource
 from tryfer.trace import Trace, Annotation, Endpoint
 
@@ -84,6 +86,17 @@ class TraceResource(Resource):
     """
     TraceResource is responsible for taking POST requests and converting
     the JSON output to a scribe log.
+
+    Response formats:
+
+    Success or partial failure:
+
+    {"succeeded": numberOfSucesfullyInsertedTraces,
+     "failed": numberOfTracesWhichFailedInsertion}
+
+    Failure due to invalid body:
+
+    {"error": "Error message"}
     """
     def render_POST(self, request):
         request.responseHeaders.setRawHeaders(
@@ -91,27 +104,47 @@ class TraceResource(Resource):
 
         body = request.content.read()
 
-        for json_span in json.loads(body):
-            trace_id = int(json_span['trace_id'], 16)
-            span_id = int(json_span['span_id'], 16)
-            parent_span_id = json_span.get('parent_span_id')
+        try:
+            spans = json.loads(body)
+        except ValueError:
+            log.msg('Failed to decode request body')
+            msg = 'Could not decode request body (invalid JSON)'
+            return json.dumps({'error': msg})
 
-            if parent_span_id:
-                parent_span_id = int(parent_span_id, 16)
+        succeeded, failed = 0, 0
 
-            t = Trace(json_span['name'], trace_id, span_id, parent_span_id)
+        for json_span in spans:
+            trace_id = None
 
-            for json_annotation in json_span['annotations']:
-                annotation = Annotation(
-                    json_annotation['key'],
-                    json_annotation['value'],
-                    json_annotation['type'])
+            try:
+                trace_id = int(json_span['trace_id'], 16)
+                span_id = int(json_span['span_id'], 16)
+                parent_span_id = json_span.get('parent_span_id', None)
 
-                host = json_annotation.get('host')
-                if host:
-                    annotation.endpoint = Endpoint(
-                        host['ipv4'], host['port'], host['service_name'])
+                if parent_span_id is not None:
+                    parent_span_id = int(parent_span_id, 16)
 
-                t.record(annotation)
+                t = Trace(json_span['name'], trace_id, span_id, parent_span_id)
 
-        return json.dumps({'ok': True})
+                for json_annotation in json_span['annotations']:
+                    annotation = Annotation(
+                        json_annotation['key'],
+                        json_annotation['value'],
+                        json_annotation['type'])
+
+                    host = json_annotation.get('host', None)
+
+                    if host:
+                        annotation.endpoint = Endpoint(
+                            host['ipv4'], host['port'], host['service_name'])
+
+                    t.record(annotation)
+                    succeeded = succeeded + 1
+            except Exception, e:
+                log.msg('Failed to insert a trace: traceId=%s,err=%s' %
+                        (str(traceId), str(e))
+
+                failed = failed + 1
+                continue
+
+        return json.dumps({'succeeded': succeeded, 'failed': failed})
