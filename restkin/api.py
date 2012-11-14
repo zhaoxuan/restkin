@@ -20,6 +20,8 @@ from twisted.python import log
 from twisted.web.resource import Resource, NoResource
 from tryfer.trace import Trace, Annotation, Endpoint
 
+from restkin.utils import decode_hex_number
+
 
 class RProxyWrapper(Resource):
     rp_error_to_http_code = {
@@ -117,12 +119,13 @@ class TraceResource(Resource):
             trace_id = None
 
             try:
-                trace_id = int(json_span['trace_id'], 16)
-                span_id = int(json_span['span_id'], 16)
+                trace_id = decode_hex_number('trace_id', json_span['trace_id'])
+                span_id = decode_hex_number('span_id', json_span['span_id'])
                 parent_span_id = json_span.get('parent_span_id', None)
 
                 if parent_span_id is not None:
-                    parent_span_id = int(parent_span_id, 16)
+                    parent_span_id = decode_hex_number('parent_span_id',
+                                                       parent_span_id)
 
                 t = Trace(json_span['name'], trace_id, span_id, parent_span_id)
 
@@ -142,7 +145,7 @@ class TraceResource(Resource):
                     succeeded = succeeded + 1
             except Exception, e:
                 log.msg('Failed to insert a trace: traceId=%s,err=%s' %
-                        (str(traceId), str(e))
+                        (str(traceId), str(e)))
 
                 failed = failed + 1
                 continue
