@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import json
-import logging
 
 from twisted.web import http
 from twisted.python import log
