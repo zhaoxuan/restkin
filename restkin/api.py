@@ -108,8 +108,8 @@ class TraceResource(Resource):
 
         try:
             spans = json.loads(body)
-        except ValueError, e:
-            log.err(e, 'Failed to decode request body')
+        except ValueError:
+            log.err(None, 'Failed to decode request body')
             msg = 'Could not decode request body (invalid JSON)'
             return json.dumps({'error': msg})
 
@@ -144,8 +144,8 @@ class TraceResource(Resource):
 
                     t.record(annotation)
                     succeeded = succeeded + 1
-            except Exception, e:
-                log.err(e, 'Failed to insert a trace: trace_id=%r,span_id=%r' %
+            except Exception:
+                log.err(None, 'Failed to insert a trace: trace_id=%r,span_id=%r' %
                         (trace_id, span_id))
 
                 failed = failed + 1
