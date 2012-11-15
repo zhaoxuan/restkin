@@ -145,7 +145,8 @@ class TraceResource(Resource):
                     t.record(annotation)
                     succeeded = succeeded + 1
             except Exception:
-                log.err(None, 'Failed to insert a trace: trace_id=%r,span_id=%r' %
+                log.err(None,
+                        'Failed to insert a trace: trace_id=%r,span_id=%r' %
                         (trace_id, span_id))
 
                 failed = failed + 1
