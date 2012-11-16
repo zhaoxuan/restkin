@@ -20,7 +20,7 @@ from twisted.internet import reactor
 from twisted.internet.endpoints import clientFromString
 
 from scrivener import ScribeClient
-from tryfer.tracers import ZipkinTracer, push_tracer
+from tryfer.tracers import ZipkinTracer, RESTkinScribeTracer, push_tracer
 
 from restkin.tap.utils import BaseOptions
 
@@ -34,7 +34,9 @@ class Options(BaseOptions):
         ["port", "p", "tcp:6956",
          "Port to listen on for RESTkin HTTP API requests"],
         ["scribe", None, "tcp:localhost:1463",
-         "endpoint string description for where to connect to scribe"]]
+         "endpoint string describing which scribe to connect to for Zipkin thrift tracing"],
+        ["json-scribe", None, None,
+         "endpoint string describing which scribe, if any, to connect to for JSON tracing (eg, logging)"], ]
 
     optFlags = [["rproxy", "r", "Use node-rproxy for authentication."]]
 
@@ -46,6 +48,11 @@ def makeService(config):
         ZipkinTracer(
             ScribeClient(
                 clientFromString(reactor, config['scribe']))))
+
+    if config['json-scribe'] is not None:
+        push_tracer(RESTkinScribeTracer(
+            ScribeClient(
+                clientFromString(reactor, config['json-scribe']))))
 
     root = RootResource()
 
