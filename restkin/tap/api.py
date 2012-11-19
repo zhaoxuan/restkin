@@ -34,9 +34,11 @@ class Options(BaseOptions):
         ["port", "p", "tcp:6956",
          "Port to listen on for RESTkin HTTP API requests"],
         ["scribe", None, "tcp:localhost:1463",
-         "endpoint string describing which scribe to connect to for Zipkin thrift tracing"],
+         "endpoint string describing which scribe to connect to for Zipkin \
+thrift tracing"],
         ["json-scribe", None, None,
-         "endpoint string describing which scribe, if any, to connect to for JSON tracing (eg, logging)"], ]
+         "endpoint string describing which scribe, if any, to connect to for \
+JSON tracing (eg, logging)"], ]
 
     optFlags = [["rproxy", "r", "Use node-rproxy for authentication."]]
 
