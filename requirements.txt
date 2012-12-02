@@ -5,3 +5,4 @@ txKeystone>=0.1.0
 scrivener>=0.2
 tryfer>=0.1
 pep8
+pyflakes

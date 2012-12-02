@@ -2,6 +2,17 @@ language: python
 python:
   - "2.6"
   - "2.7"
+  - pypy
 
-install: pip install -r requirements.txt --use-mirrors
-script: pep8 restkin/
+env:
+  - TWISTED_VERSION=12.0.0
+  - TWISTED_VERSION=12.1.0
+  - TWISTED_VERSION=12.2.0
+
+install:
+  - pip install Twisted==$TWISTED_VERSION --use-mirrors
+  - pip install -r requirements.txt --use-mirrors
+
+script:
+  - pep8 restkin
+  - pyflakes restkin
