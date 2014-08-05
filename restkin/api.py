@@ -68,19 +68,25 @@ class RootResource(Resource):
 
 class VersionResource(Resource):
     def getChild(self, path, request):
-        return TenantResource(path)
-
-
-class TenantResource(Resource):
-    def __init__(self, tenant_id):
-        Resource.__init__(self)
-        self._tenant_id = tenant_id
-
-    def getChild(self, path, request):
         if path == 'trace':
             return TraceResource()
 
         return NoResource()
+
+## useless TenantId, so I annotate this code
+## POST API from /v1.0/<tenantId>/trace
+## to /v1.0/trace
+
+# class TenantResource(Resource):
+#     def __init__(self, tenant_id):
+#         Resource.__init__(self)
+#         self._tenant_id = tenant_id
+
+#     def getChild(self, path, request):
+#         if path == 'trace':
+#             return TraceResource()
+
+#         return NoResource()
 
 
 class TraceResource(Resource):
