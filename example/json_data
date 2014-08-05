@@ -1,0 +1,1 @@
+[{"span_id": "0000000000000001", "trace_id": "000000000000000f", "name": "GET", "annotations": [{"type": "timestamp", "key": "cs", "value": 1407217746030292, "host": {"ipv4": "2130706433", "port": 80, "service_name": "restkin"}}, {"type": "timestamp", "key": "cr", "value": 1407217746033292, "host": {"ipv4": "2130706433", "port": 80, "service_name": "restkin"}}]}]
