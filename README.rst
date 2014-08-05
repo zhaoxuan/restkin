@@ -6,12 +6,12 @@ A REST interface for publishing traces to zipkin.
 API
 ===
 
-POST /v1.0/<tenantId>/trace
----------------------------
+POST /v1.0/trace
+----------------
 
 Headers:
  * ``Content-Type: application/json``
- * ``X-Auth-Token: <Auth Token>``
+ * ``X-Auth-Token: <Auth Token>`` optional
 
 Body::
 
