@@ -52,12 +52,12 @@ def makeService(config):
     #     _reactor=None)
     push_tracer(
         ZipkinTracer(
-            ScribeClient(clientFromString(reactor, config['scribe'])), 'zipkin', None, 0, 10, None))
+            ScribeClient(clientFromString(reactor, config['scribe'])), 'zipkin', None, 10, 10, None))
 
     root = RootResource()
 
-    if config['rproxy']:
-        root = RProxyWrapper(root)
+    # if config['rproxy']:
+    #     root = RProxyWrapper(root)
 
     site = server.Site(root)
     site.displayTracebacks = False
