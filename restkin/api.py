@@ -106,6 +106,11 @@ class TraceResource(Resource):
     {"error": "Error message"}
     """
     def render_POST(self, request):
+        print "For CORS by john"
+
+        request.setHeader('Access-Control-Allow-Origin', '*')
+        request.setHeader('Access-Control-Allow-Methods', 'POST')
+
         request.responseHeaders.setRawHeaders(
             'content-type', ['application/json'])
 
