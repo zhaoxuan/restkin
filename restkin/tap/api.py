@@ -34,7 +34,9 @@ class Options(BaseOptions):
         ["port", "p", "tcp:6956",
          "Port to listen on for RESTkin HTTP API requests"],
         ["scribe", None, "tcp:localhost:1463",
-         "endpoint string description for where to connect to scribe"]]
+         "endpoint string description for where to connect to scribe"],
+        ["trace", "t", "50:10", "Max tracers and max idle time"]
+    ]
 
     optFlags = [["rproxy", "r", "Use node-rproxy for authentication."]]
 
@@ -42,6 +44,12 @@ class Options(BaseOptions):
 def makeService(config):
     s = MultiService()
 
+    scribe_client = ScribeClient(clientFromString(reactor, config['scribe']))
+    if len(config['trace'].split(':')) == 2 :
+        max_traces, max_idle_time = config['trace'].split(':')
+    else:
+        print "error in trace parameters"
+        exit()
 
     # ZipkinTracer(
     #     scribe_client,
@@ -50,9 +58,12 @@ def makeService(config):
     #     max_traces=50,
     #     max_idle_time=10,
     #     _reactor=None)
+
     push_tracer(
         ZipkinTracer(
-            ScribeClient(clientFromString(reactor, config['scribe'])), 'zipkin', None, 10, 10, None))
+            scribe_client, 'zipkin', None, max_traces, max_idle_time, None
+        )
+    )
 
     root = RootResource()
 
