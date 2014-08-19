@@ -61,7 +61,7 @@ def makeService(config):
 
     push_tracer(
         ZipkinTracer(
-            scribe_client, 'zipkin', None, max_traces, max_idle_time, None
+            scribe_client, 'zipkin', None, int(max_traces), int(max_idle_time), None
         )
     )
 
