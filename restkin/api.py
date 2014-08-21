@@ -114,6 +114,13 @@ class TraceResource(Resource):
         request.responseHeaders.setRawHeaders(
             'content-type', ['application/json'])
 
+        request_headers = request.requestHeaders._rawHeaders
+        category = 'X-B3-Category'
+        try:
+            prefix = request_headers[category.lower()]
+        except KeyError:
+            prefix = ['']
+
         body = request.content.read()
 
         try:
@@ -149,8 +156,14 @@ class TraceResource(Resource):
                     host = json_annotation.get('host', None)
 
                     if host:
+                        # if prefix is not empty then prefix:service_name
+                        if bool(prefix[0]):
+                            service_name = prefix[0] + ':' + host['service_name']
+                        else:
+                            service_name = host['service_name']
+
                         annotation.endpoint = Endpoint(
-                            host['ipv4'], host['port'], host['service_name'])
+                            host['ipv4'], host['port'], service_name)
 
                     t.record(annotation)
                     succeeded = succeeded + 1
