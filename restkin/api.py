@@ -110,6 +110,7 @@ class TraceResource(Resource):
 
         request.setHeader('Access-Control-Allow-Origin', '*')
         request.setHeader('Access-Control-Allow-Methods', 'POST')
+        request.setHeader('Access-Control-Allow-Headers', 'authorization, content-type')
 
         request.responseHeaders.setRawHeaders(
             'content-type', ['application/json'])
@@ -163,3 +164,18 @@ class TraceResource(Resource):
                 continue
 
         return json.dumps({'succeeded': succeeded, 'failed': failed})
+
+    def render_OPTIONS(self, request):
+        print "For CORS by john"
+
+        request.setHeader('Access-Control-Allow-Origin', '*')
+        request.setHeader('Access-Control-Allow-Methods', 'POST')
+        request.setHeader('Access-Control-Allow-Headers', 'authorization, content-type')
+
+        request.responseHeaders.setRawHeaders(
+            'content-type', ['application/json'])
+
+        return 'ok'
+
+    def render_GET(self, request):
+        return 'Test connecting'
