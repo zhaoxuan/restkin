@@ -2,3 +2,5 @@ dropin.cache
 *.pyc
 twistd.*
 _trial_temp
+.tags*
+example/json_data
